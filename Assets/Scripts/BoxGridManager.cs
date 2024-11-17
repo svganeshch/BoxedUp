@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BoxGridManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class BoxGridManager : MonoBehaviour
     public List<GameObject> boxes;
     public Color gridColor = Color.green;
 
+    private List<GameObject> boxesInstantiated = new List<GameObject>();
     private bool[,] gridOccupied;
     private Vector3[,] gridPositions;
 
@@ -17,7 +19,9 @@ public class BoxGridManager : MonoBehaviour
     {
         rows = currentLevelData.rows;
         cols = currentLevelData.cols;
-        boxes = currentLevelBoxes;
+
+        boxes = currentLevelBoxes.OrderBy(_ => Random.value).ToList();
+        levelColorData = levelColorData.OrderBy(_ => Random.value).ToArray();
 
         Vector3 gridSize = GetComponent<MeshRenderer>().bounds.size;
 
@@ -53,6 +57,7 @@ public class BoxGridManager : MonoBehaviour
         {
             GameObject box = Instantiate(boxPrefab);
             IBox boxInfo = box.GetComponent<IBox>();
+            boxesInstantiated.Add(box);
 
             if (boxInfo == null)
             {
@@ -86,6 +91,14 @@ public class BoxGridManager : MonoBehaviour
                 Debug.LogWarning("No space available for the box.");
                 Destroy(box);
             }
+        }
+    }
+
+    public void ClearGrid()
+    {
+        foreach (var box in boxesInstantiated)
+        {
+            Destroy(box);
         }
     }
 

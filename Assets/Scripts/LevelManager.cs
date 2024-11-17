@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LevelManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class LevelManager : MonoBehaviour
     }
 
     public LevelData[] levelsData;
+
+    public UnityEvent<int> OnLevelChange;
 
     private void Awake()
     {
@@ -42,5 +45,18 @@ public class LevelManager : MonoBehaviour
         }
 
         boxGridManager.GenerateGrid(levelData, levelBoxes, levelColorData);
+    }
+
+    public void NextLevel()
+    {
+        if (currentLevel == levelsData.Length - 1) return;
+
+        Level += 1;
+
+        //ClearLevel
+        boxGridManager.ClearGrid();
+        GenerateCurrentLevelData();
+
+        OnLevelChange.Invoke(Level + 1);
     }
 }
