@@ -1278,9 +1278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1531bc33be6d34696aa84d2d822e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 2
-  cols: 2
-  boxMaterial: {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
+  size: 4
+  targetMaterial: {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
+  boxMaterials: []
 --- !u!1 &8989561824840296502
 GameObject:
   m_ObjectHideFlags: 0

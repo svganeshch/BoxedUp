@@ -1,69 +1,123 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class BoxGridManager : MonoBehaviour
 {
     public int rows;
     public int cols;
-    public GameObject boxPrefab;
+    public float spacing = 0.1f;
+    public float padding = 0.5f;
+    public List<GameObject> boxes;
+    public Color gridColor = Color.green;
 
+    private bool[,] gridOccupied;
     private Vector3[,] gridPositions;
 
-    private GameObject grid;
-
-    private void Start()
+    public void GenerateGrid(LevelData currentLevelData, List<GameObject> currentLevelBoxes, ColorData[] levelColorData)
     {
-        grid = gameObject;
+        rows = currentLevelData.rows;
+        cols = currentLevelData.cols;
+        boxes = currentLevelBoxes;
 
-        GenerateGrid(rows, cols);
-        AssignObjectsToGrid();
-    }
+        Vector3 gridSize = GetComponent<MeshRenderer>().bounds.size;
 
-    public void GenerateGrid(int rows, int cols)
-    {
-        Vector3 gridSize = grid.GetComponent<MeshRenderer>().bounds.size;
+        gridSize.x -= 2 * padding;
+        gridSize.z -= 2 * padding;
 
-        float gridWidth = gridSize.x / rows;
-        float gridHeight = gridSize.z / cols;
+        float cellWidth = (gridSize.x - (cols - 1) * spacing) / cols;
+        float cellHeight = (gridSize.z - (rows - 1) * spacing) / rows;
 
-        Vector3 gridStartingPos = grid.transform.position - gridSize / 2;
+        Vector3 gridStartingPos = transform.position - gridSize / 2
+                                  + new Vector3(padding, 0, padding);
 
         gridPositions = new Vector3[rows, cols];
+        gridOccupied = new bool[rows, cols];
 
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                float x = gridStartingPos.x + (col * gridWidth) + (gridWidth / 2);
-                float z = gridStartingPos.z + (row * gridHeight) + (gridHeight / 2);
+                float x = gridStartingPos.x + (col * (cellWidth + spacing)) + (cellWidth / 2);
+                float z = gridStartingPos.z + (row * (cellHeight + spacing)) + (cellHeight / 2);
                 gridPositions[row, col] = new Vector3(x, gridStartingPos.y, z);
+                gridOccupied[row, col] = false;
+            }
+        }
+
+        ArrangeBoxes(levelColorData);
+    }
+
+    void ArrangeBoxes(ColorData[] levelColorData)
+    {
+        foreach (GameObject boxPrefab in boxes)
+        {
+            GameObject box = Instantiate(boxPrefab);
+            IBox boxInfo = box.GetComponent<IBox>();
+
+            if (boxInfo == null)
+            {
+                Debug.LogError("Box prefab must implement the IBox interface!");
+                Destroy(box);
+                continue;
+            }
+
+            boxInfo.SetColor(levelColorData[Random.Range(0, levelColorData.Length)].color);
+
+            int boxSize = boxInfo.GetSize();
+
+            bool boxPlaced = false;
+
+            for (int row = 0; row < rows; row++)
+            {
+                if (boxPlaced) break;
+                for (int col = 0; col < cols; col++)
+                {
+                    if (gridOccupied[row, col]) continue;
+
+                    box.transform.position = gridPositions[row, col];
+                    gridOccupied[row, col] = true;
+                    boxPlaced = true;
+                    break;
+                }
+            }
+
+            if (!boxPlaced)
+            {
+                Debug.LogWarning("No space available for the box.");
+                Destroy(box);
             }
         }
     }
 
-    void AssignObjectsToGrid()
+    private void OnDrawGizmos()
     {
+        if (rows == 0 || cols == 0 || spacing == 0) return;
+
+        Gizmos.color = gridColor;
+
+        Vector3 gridSize = GetComponent<MeshRenderer>().bounds.size;
+
+        gridSize.x -= 2 * padding;
+        gridSize.z -= 2 * padding;
+
+        float cellWidth = (gridSize.x - (cols - 1) * spacing) / cols;
+        float cellHeight = (gridSize.z - (rows - 1) * spacing) / rows;
+
+        Vector3 gridStartingPos = transform.position - GetComponent<MeshRenderer>().bounds.size / 2
+                                  + new Vector3(padding, 0, padding);
+
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                Instantiate(boxPrefab, gridPositions[row, col], Quaternion.identity);
+                float x = gridStartingPos.x + (col * (cellWidth + spacing)) + (cellWidth / 2);
+                float z = gridStartingPos.z + (row * (cellHeight + spacing)) + (cellHeight / 2);
+
+                Vector3 position = new Vector3(x, gridStartingPos.y, z);
+                Gizmos.DrawSphere(position, 0.5f);
+
+                Gizmos.DrawWireCube(position, new Vector3(cellWidth, 0.1f, cellHeight));
             }
         }
     }
-
-    void OnDrawGizmos()
-    {
-        if (gridPositions == null) return;
-
-        Gizmos.color = Color.green;
-        for (int row = 0; row < rows; row++)
-        {
-            for (int col = 0; col < cols; col++)
-            {
-                Gizmos.DrawWireCube(gridPositions[row, col], new Vector3(1, 0.1f, 1));
-            }
-        }
-    }
-
 }

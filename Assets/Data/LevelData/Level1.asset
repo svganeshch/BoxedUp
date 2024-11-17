@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2df6fb751a9c3c4b85ea9ebe059e322, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  rows: 2
+  cols: 2
+  gridHeight: 0
+  boxPrefabs:
+  - {fileID: 7974066797810726363, guid: 42bde5f544ff51d4fb442ce47112ef95, type: 3}
+  boxColors:
+  - {fileID: 11400000, guid: aa35a03eca22e054eb38994812f2ff29, type: 2}
+  - {fileID: 11400000, guid: fbbe254216027b44fa004fdad618a990, type: 2}
