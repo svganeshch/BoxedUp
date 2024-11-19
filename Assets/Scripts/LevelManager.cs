@@ -6,6 +6,7 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] private int currentLevel = 0;
     private BoxGridManager boxGridManager;
+    private CansGridManager cansGridManager;
 
     public int Level
     {
@@ -20,6 +21,7 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         boxGridManager = FindAnyObjectByType<BoxGridManager>();
+        cansGridManager = FindAnyObjectByType<CansGridManager>();
     }
 
     private void Start()
@@ -55,6 +57,8 @@ public class LevelManager : MonoBehaviour
 
         //ClearLevel
         boxGridManager.ClearGrid();
+        cansGridManager.ClearCans();
+        
         GenerateCurrentLevelData();
 
         OnLevelChange.Invoke(Level + 1);

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : MonoBehaviour, IBox
+public class Box : MonoBehaviour, IPackageItem
 {
     [SerializeField] private int size;
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IBox
+public interface IPackageItem
 {
     Color GetColor();
     void SetColor(Color color);

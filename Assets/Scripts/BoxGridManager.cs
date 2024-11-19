@@ -15,6 +15,13 @@ public class BoxGridManager : MonoBehaviour
     private bool[,] gridOccupied;
     private Vector3[,] gridPositions;
 
+    private CansGridManager cansGridManager;
+
+    private void Awake()
+    {
+        cansGridManager = FindAnyObjectByType<CansGridManager>();
+    }
+
     public void GenerateGrid(LevelData currentLevelData, List<GameObject> currentLevelBoxes, ColorData[] levelColorData)
     {
         rows = currentLevelData.rows;
@@ -56,12 +63,12 @@ public class BoxGridManager : MonoBehaviour
         foreach (GameObject boxPrefab in boxes)
         {
             GameObject box = Instantiate(boxPrefab);
-            IBox boxInfo = box.GetComponent<IBox>();
+            IPackageItem boxInfo = box.GetComponent<IPackageItem>();
             boxesInstantiated.Add(box);
 
             if (boxInfo == null)
             {
-                Debug.LogError("Box prefab must implement the IBox interface!");
+                Debug.LogError("Box prefab must implement the IPackageItem interface!");
                 Destroy(box);
                 continue;
             }
@@ -92,6 +99,8 @@ public class BoxGridManager : MonoBehaviour
                 Destroy(box);
             }
         }
+
+        cansGridManager.GenerateCans(boxesInstantiated);
     }
 
     public void ClearGrid()
@@ -100,6 +109,8 @@ public class BoxGridManager : MonoBehaviour
         {
             Destroy(box);
         }
+
+        boxesInstantiated.Clear();
     }
 
     private void OnDrawGizmos()
