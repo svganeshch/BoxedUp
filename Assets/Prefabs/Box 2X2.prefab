@@ -1243,6 +1243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4417068706898197687}
   - component: {fileID: 844740971959960084}
+  - component: {fileID: 8696956300190183666}
   m_Layer: 0
   m_Name: Box 2X2
   m_TagString: Untagged
@@ -1280,7 +1281,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 4
   targetMaterial: {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
+  meshRenderers: []
   boxMaterials: []
+--- !u!65 &8696956300190183666
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7974066797810726363}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.0488524, y: 1.580287, z: 3.9010563}
+  m_Center: {x: 0.10692096, y: 1.0479809, z: -0.12428093}
 --- !u!1 &8989561824840296502
 GameObject:
   m_ObjectHideFlags: 0

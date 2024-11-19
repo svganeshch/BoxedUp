@@ -1417,6 +1417,7 @@ GameObject:
   m_Component:
   - component: {fileID: 625522567979814866}
   - component: {fileID: 4771662830581481050}
+  - component: {fileID: 7123490079292174176}
   m_Layer: 0
   m_Name: Box 3X2
   m_TagString: Untagged
@@ -1454,4 +1455,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 6
   targetMaterial: {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
+  meshRenderers: []
   boxMaterials: []
+--- !u!65 &7123490079292174176
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8751971297319285670}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.0125587, y: 1.6285398, z: 5.019873}
+  m_Center: {x: 0.088774204, y: 1.0721074, z: 0.004108429}

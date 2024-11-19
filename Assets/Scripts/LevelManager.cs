@@ -5,8 +5,10 @@ using UnityEngine.Events;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField] private int currentLevel = 0;
-    private BoxGridManager boxGridManager;
-    private CansGridManager cansGridManager;
+
+    public BoxGridManager boxGridManager;
+    public CansGridManager cansGridManager;
+    public PackageSlotsManager packageSlotsManager;
 
     public int Level
     {
@@ -22,6 +24,7 @@ public class LevelManager : MonoBehaviour
     {
         boxGridManager = FindAnyObjectByType<BoxGridManager>();
         cansGridManager = FindAnyObjectByType<CansGridManager>();
+        packageSlotsManager = FindAnyObjectByType<PackageSlotsManager>();
     }
 
     private void Start()
