@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CansGridManager : MonoBehaviour
@@ -48,6 +49,7 @@ public class CansGridManager : MonoBehaviour
 
         float currentDistance = 0f;
 
+        cans = cans.OrderBy(_ => Random.value).ToList();
         foreach (GameObject can in cans)
         {
             Vector3 position = GetPositionOnLine(segmentLengths, currentDistance);
@@ -73,7 +75,7 @@ public class CansGridManager : MonoBehaviour
             segmentLengths[i] = segmentLength;
             totalLength += segmentLength;
         }
-
+         
         return totalLength;
     }
 
