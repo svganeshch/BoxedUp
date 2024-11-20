@@ -18,6 +18,8 @@ public class Can : MonoBehaviour, IPackageItem
     public void SetColor(Color color)
     {
         meshRenderer.material.color = color;
+
+        this.color = color;
     }
 
     public int GetSize()

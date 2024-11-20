@@ -4,11 +4,14 @@ using UnityEngine.Events;
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager Instance;
+
     [SerializeField] private int currentLevel = 0;
 
     public BoxGridManager boxGridManager;
     public CansGridManager cansGridManager;
-    public PackageSlotsManager packageSlotsManager;
+    public SlotsPlatformManager slotsPlatformManager;
+    public PackageController packageController;
 
     public int Level
     {
@@ -22,9 +25,19 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         boxGridManager = FindAnyObjectByType<BoxGridManager>();
         cansGridManager = FindAnyObjectByType<CansGridManager>();
-        packageSlotsManager = FindAnyObjectByType<PackageSlotsManager>();
+        slotsPlatformManager = FindAnyObjectByType<SlotsPlatformManager>();
+        packageController = FindAnyObjectByType<PackageController>();
     }
 
     private void Start()
@@ -63,6 +76,8 @@ public class LevelManager : MonoBehaviour
         cansGridManager.ClearCans();
         
         GenerateCurrentLevelData();
+
+        packageController.RestartCoroutine();
 
         OnLevelChange.Invoke(Level + 1);
     }

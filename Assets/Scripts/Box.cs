@@ -5,6 +5,7 @@ public class Box : MonoBehaviour, IPackageItem
 {
     [SerializeField] private int size;
 
+    public BoxSlotsManager slotsManager;
     public Material targetMaterial;
     public MeshRenderer[] meshRenderers;
     public List<Material> boxMaterials = new List<Material>();
@@ -13,6 +14,7 @@ public class Box : MonoBehaviour, IPackageItem
 
     private void Awake()
     {
+        slotsManager = GetComponentInChildren<BoxSlotsManager>();
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
 
         foreach (var renderer in meshRenderers)

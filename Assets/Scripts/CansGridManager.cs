@@ -8,9 +8,8 @@ public class CansGridManager : MonoBehaviour
 
     public GameObject canPrefab;
     public float spacing = 0.5f;
-    public int numberOfObjects = 10;
 
-    private List<GameObject> cans = new List<GameObject>();
+    public List<Can> cans = new List<Can>();
 
     private void Awake()
     {
@@ -25,9 +24,8 @@ public class CansGridManager : MonoBehaviour
 
             for (int i = 0; i < currentBox.GetSize(); i++)
             {
-                GameObject can = Instantiate(canPrefab);
-                IPackageItem currentCan = can.GetComponent<IPackageItem>();
-                currentCan.SetColor(currentBox.GetColor());
+                Can can = Instantiate(canPrefab).GetComponent<Can>();
+                can.SetColor(currentBox.GetColor());
 
                 cans.Add(can);
             }
@@ -50,7 +48,7 @@ public class CansGridManager : MonoBehaviour
         float currentDistance = 0f;
 
         cans = cans.OrderBy(_ => Random.value).ToList();
-        foreach (GameObject can in cans)
+        foreach (var can in cans)
         {
             Vector3 position = GetPositionOnLine(segmentLengths, currentDistance);
             //Instantiate(canPrefab, position, Quaternion.identity);

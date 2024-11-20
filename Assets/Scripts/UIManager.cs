@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        levelManager = FindAnyObjectByType<LevelManager>();
+        levelManager = LevelManager.Instance;
     }
 
     private void Start()

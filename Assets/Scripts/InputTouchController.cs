@@ -8,8 +8,6 @@ public class InputTouchController : MonoBehaviour
     InputAction touchPositionAction;
     InputAction touchPressAction;
 
-    LevelManager levelManager;
-
     Vector2 touchPosition;
 
     Ray ray;
@@ -21,8 +19,6 @@ public class InputTouchController : MonoBehaviour
 
         touchPositionAction = playerInput.actions["TouchPosition"];
         touchPressAction = playerInput.actions["TouchPress"];
-
-        levelManager = FindAnyObjectByType<LevelManager>();
     }
 
     private void Start()
@@ -57,7 +53,7 @@ public class InputTouchController : MonoBehaviour
                 {
                     Debug.Log("obatined box : " + box);
 
-                    levelManager.packageSlotsManager.SetSlot(box.gameObject);
+                    LevelManager.Instance.slotsPlatformManager.SetSlot(box.gameObject);
                 }
             }
         }
