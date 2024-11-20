@@ -746,6 +746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canPrefab: {fileID: 6349223536768628169, guid: b45bb1653a0a9144981b153b20bd7205,
     type: 3}
+  maxCans: 100
   spacing: 1.25
   cans: []
 --- !u!114 &483504978
@@ -1039,7 +1040,6 @@ MonoBehaviour:
     Obj: {fileID: 0}
   - Slot: {fileID: 764320131}
     Obj: {fileID: 0}
-  slotFillCount: 0
 --- !u!1 &764320131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,7 +1575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ca60dfc053a484c9fafff07e6e4f2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevel: 0
+  currentLevel: 2
   boxGridManager: {fileID: 0}
   cansGridManager: {fileID: 0}
   slotsPlatformManager: {fileID: 0}

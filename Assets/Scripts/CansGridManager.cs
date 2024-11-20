@@ -30,11 +30,12 @@ public class CansGridManager : MonoBehaviour
                 cans.Add(can);
             }
         }
+        cans = cans.OrderBy(_ => Random.value).ToList();
 
         ArrangeCans();
     }
 
-    private void ArrangeCans()
+    public void ArrangeCans()
     {
         if (cans.Count <= 0)
         {
@@ -44,14 +45,11 @@ public class CansGridManager : MonoBehaviour
 
         float[] segmentLengths;
         float totalLength = CalculateLineLength(out segmentLengths);
-
         float currentDistance = 0f;
 
-        cans = cans.OrderBy(_ => Random.value).ToList();
         foreach (var can in cans)
         {
             Vector3 position = GetPositionOnLine(segmentLengths, currentDistance);
-            //Instantiate(canPrefab, position, Quaternion.identity);
             can.transform.position = position;
 
             currentDistance += spacing;

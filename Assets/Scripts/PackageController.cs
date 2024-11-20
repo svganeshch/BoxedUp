@@ -43,6 +43,7 @@ public class PackageController : MonoBehaviour
                     {
                         currentBox.slotsManager.SetSlot(cansList[0].gameObject);
                         cansList.RemoveAt(0);
+                        levelManager.cansGridManager.ArrangeCans();
 
                         Debug.Log("Found same color box, placing can!");
                     }
@@ -51,7 +52,7 @@ public class PackageController : MonoBehaviour
 
             //Debug.Log("looping......!");
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
