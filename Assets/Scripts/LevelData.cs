@@ -5,7 +5,9 @@ public class LevelData : ScriptableObject
 {
     public int rows;
     public int cols;
-    public int gridHeight;
+    public int gridLayers = 1;
+    public bool gridRowsReduced = false;
+    public bool gridColumnsReduced = false;
 
     public GameObject[] boxPrefabs;
     public ColorData[] boxColors;

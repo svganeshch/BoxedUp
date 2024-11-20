@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 5
   cols: 5
-  gridHeight: 1
+  gridLayers: 3
+  gridRowsReduced: 0
+  gridColumnsReduced: 1
   boxPrefabs:
   - {fileID: 7974066797810726363, guid: 42bde5f544ff51d4fb442ce47112ef95, type: 3}
   - {fileID: 8751971297319285670, guid: d54c9d2ec2fa3cf469c6fb212c54c701, type: 3}

@@ -746,7 +746,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canPrefab: {fileID: 6349223536768628169, guid: b45bb1653a0a9144981b153b20bd7205,
     type: 3}
-  maxCans: 100
   spacing: 1.25
   cans: []
 --- !u!114 &483504978
@@ -1575,7 +1574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ca60dfc053a484c9fafff07e6e4f2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevel: 2
+  currentLevel: 0
   boxGridManager: {fileID: 0}
   cansGridManager: {fileID: 0}
   slotsPlatformManager: {fileID: 0}
@@ -1725,8 +1724,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 2
   cols: 2
+  layers: 2
   spacing: 0.1
   padding: 0
+  layerHeight: 1.5
+  reduceRows: 0
+  reduceCols: 0
   boxes: []
   gridColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1272316267

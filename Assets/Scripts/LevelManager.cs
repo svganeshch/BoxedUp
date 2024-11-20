@@ -51,7 +51,7 @@ public class LevelManager : MonoBehaviour
         ColorData[] levelColorData = levelData.boxColors;
 
         GameObject[] levelBoxPrefabs = levelData.boxPrefabs;
-        int levelGridSize = levelData.rows * levelData.cols;
+        int levelGridSize = levelData.rows * levelData.cols * levelData.gridLayers;
 
         List<GameObject> levelBoxes = new List<GameObject>();
         
