@@ -6,7 +6,7 @@ public class Box : MonoBehaviour, IPackageItem
     [SerializeField] private int size;
 
     public BoxSlotsManager slotsManager;
-    public Material targetMaterial;
+    public Material[] targetMaterials;
     public MeshRenderer[] meshRenderers;
     public List<Material> boxMaterials = new List<Material>();
 
@@ -19,8 +19,11 @@ public class Box : MonoBehaviour, IPackageItem
 
         foreach (var renderer in meshRenderers)
         {
-            if (renderer.sharedMaterial == targetMaterial)
-                boxMaterials.Add(renderer.material);
+            foreach (var targetMaterial in targetMaterials)
+            {
+                if (renderer.sharedMaterial == targetMaterial)
+                    boxMaterials.Add(renderer.material);
+            }
         }
     }
 
