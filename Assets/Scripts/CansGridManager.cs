@@ -16,16 +16,16 @@ public class CansGridManager : MonoBehaviour
         lineRenderer = GetComponentInChildren<LineRenderer>();
     }
 
-    public void GenerateCans(List<GameObject> boxes)
+    public void GenerateCans(List<Box> boxes)
     {
-        foreach (GameObject box in boxes)
-        {
-            IPackageItem currentBox = box.GetComponent<IPackageItem>();
+        ClearCans();
 
-            for (int i = 0; i < currentBox.GetSize(); i++)
+        foreach (Box box in boxes)
+        {
+            for (int i = 0; i < box.GetSize(); i++)
             {
                 Can can = Instantiate(canPrefab).GetComponent<Can>();
-                can.SetColor(currentBox.GetColor());
+                can.SetColor(box.GetColor());
 
                 cans.Add(can);
             }
@@ -101,7 +101,8 @@ public class CansGridManager : MonoBehaviour
     {
         foreach (var can in cans)
         {
-            Destroy(can);
+            if (can != null)
+                Destroy(can.gameObject);
         }
 
         cans.Clear();

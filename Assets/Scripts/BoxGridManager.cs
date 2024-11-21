@@ -1,178 +1,175 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BoxGridManager : MonoBehaviour
 {
-    public int rows;
-    public int cols;
-    public int layers = 1;
-    public float spacing = 0.1f;
-    public float padding = 0.5f;
-    public float layerHeight = 1.0f;
-    public bool reduceRows = false;
-    public bool reduceCols = false;
-    public List<GameObject> boxes;
-    public Color gridColor = Color.green;
+    public GameObject boxPrefab;
+    public int rows = 5;
+    public int columns = 4;
+    public int layers = 2;
 
-    private List<GameObject> boxesInstantiated = new List<GameObject>();
-    private bool[,,] gridOccupied;
-    private Vector3[,,] gridPositions;
+    public Vector3 spacingOffset = new Vector3(0.1f, 0.1f, 0.1f);
+    public Vector3 gridOffset = Vector3.zero;
 
-    private CansGridManager cansGridManager;
+    public bool reduceRowsPerLayer = true;
+    public bool reduceColumnsPerLayer = true;
+    public int rowReductionAmount = 1;
+    public int columnReductionAmount = 1;
+    public float rotationProbability = 0.3f;
 
-    private void Awake()
+    private Vector3 boxSize;
+
+    private LevelManager levelManager;
+    private List<Box> boxList = new List<Box>();
+
+    private void Start()
     {
-        cansGridManager = FindAnyObjectByType<CansGridManager>();
+        levelManager = LevelManager.Instance;
     }
 
-    public void GenerateGrid(LevelData currentLevelData, List<GameObject> currentLevelBoxes, ColorData[] levelColorData)
+    public void GenerateBoxGrid(LevelData currentLevelData)
     {
-        rows = currentLevelData.rows;
-        cols = currentLevelData.cols;
+        ClearGrid();
+
+        int currentRows = currentLevelData.rows;
+        int currentColumns = currentLevelData.cols;
         layers = currentLevelData.gridLayers;
-        reduceRows = currentLevelData.gridRowsReduced;
-        reduceCols = currentLevelData.gridColumnsReduced;
+        reduceRowsPerLayer = currentLevelData.gridRowsReduced;
+        reduceColumnsPerLayer = currentLevelData.gridColumnsReduced;
 
-        boxes = currentLevelBoxes.OrderBy(_ => Random.value).ToList();
-        levelColorData = levelColorData.OrderBy(_ => Random.value).ToArray();
+        GameObject[] boxes = currentLevelData.boxPrefabs;
+        ColorData[] levelColorData = currentLevelData.boxColors;
 
-        Vector3 gridSize = GetComponent<MeshRenderer>().bounds.size;
+        if (boxes == null || boxes.Length == 0)
+        {
+            Debug.LogError("No prefabs provided in the boxes list!");
+            return;
+        }
 
-        gridSize.x -= 2 * padding;
-        gridSize.z -= 2 * padding;
+        float gridWidth = 0f;
+        float gridDepth = 0f;
 
-        int maxRows = rows;
-        int maxCols = cols;
-
-        gridPositions = new Vector3[maxRows, maxCols, layers];
-        gridOccupied = new bool[maxRows, maxCols, layers];
+        Vector3 startPosition = Vector3.zero;
 
         for (int layer = 0; layer < layers; layer++)
         {
-            int currentRows = maxRows - (reduceRows ? layer : 0);
-            int currentCols = maxCols - (reduceCols ? layer : 0);
-
-            float cellWidth = (gridSize.x - (currentCols - 1) * spacing) / currentCols;
-            float cellHeight = (gridSize.z - (currentRows - 1) * spacing) / currentRows;
-
-            Vector3 gridStartingPos = transform.position - gridSize / 2
-                                      + new Vector3(padding, 0, padding)
-                                      + new Vector3(0, layer * layerHeight, 0);
-
             for (int row = 0; row < currentRows; row++)
             {
-                for (int col = 0; col < currentCols; col++)
+                for (int column = 0; column < currentColumns; column++)
                 {
-                    float x = gridStartingPos.x + (col * (cellWidth + spacing)) + (cellWidth / 2);
-                    float z = gridStartingPos.z + (row * (cellHeight + spacing)) + (cellHeight / 2);
-                    gridPositions[row, col, layer] = new Vector3(x, gridStartingPos.y, z);
-                    gridOccupied[row, col, layer] = false;
-                }
-            }
-        }
-
-        ArrangeBoxes(levelColorData);
-    }
-
-    void ArrangeBoxes(ColorData[] levelColorData)
-    {
-        foreach (GameObject boxPrefab in boxes)
-        {
-            GameObject box = Instantiate(boxPrefab);
-            IPackageItem boxInfo = box.GetComponent<IPackageItem>();
-            boxesInstantiated.Add(box);
-
-            if (boxInfo == null)
-            {
-                Debug.LogError("Box prefab must implement the IPackageItem interface!");
-                Destroy(box);
-                continue;
-            }
-
-            boxInfo.SetColor(levelColorData[Random.Range(0, levelColorData.Length)].color);
-
-            bool boxPlaced = false;
-
-            for (int layer = 0; layer < layers; layer++)
-            {
-                if (boxPlaced) break;
-
-                int currentRows = rows - (reduceRows ? layer : 0);
-                int currentCols = cols - (reduceCols ? layer : 0);
-
-                for (int row = 0; row < currentRows; row++)
-                {
-                    if (boxPlaced) break;
-                    for (int col = 0; col < currentCols; col++)
+                    GameObject boxPrefab = boxes[Random.Range(0, boxes.Length)];
+                    if (!boxPrefab.TryGetComponent(out BoxCollider boxCollider))
                     {
-                        if (gridOccupied[row, col, layer]) continue;
-
-                        box.transform.position = gridPositions[row, col, layer];
-                        gridOccupied[row, col, layer] = true;
-                        boxPlaced = true;
-                        break;
+                        Debug.LogError($"Box prefab '{boxPrefab.name}' is missing a BoxCollider!");
+                        continue;
                     }
+
+                    bool shouldRotate = Random.value < rotationProbability;
+                    Quaternion rotation = shouldRotate ? Quaternion.Euler(0, 90, 0) : Quaternion.identity;
+
+                    Vector3 rotatedSize = shouldRotate
+                        ? new Vector3(boxCollider.size.z, boxCollider.size.y, boxCollider.size.x)
+                        : boxCollider.size;
+
+                    gridWidth = currentColumns * rotatedSize.x + (currentColumns - 1) * spacingOffset.x;
+                    gridDepth = currentRows * rotatedSize.z + (currentRows - 1) * spacingOffset.z;
+
+                    startPosition = new Vector3(
+                        -gridWidth / 2f + rotatedSize.x / 2f,
+                        rotatedSize.y / 2f + layer * (rotatedSize.y + spacingOffset.y),
+                        -gridDepth / 2f + rotatedSize.z / 2f
+                    ) + gridOffset;
+
+                    Vector3 position = new Vector3(
+                        startPosition.x + column * (rotatedSize.x + spacingOffset.x),
+                        startPosition.y,
+                        startPosition.z + row * (rotatedSize.z + spacingOffset.z)
+                    );
+
+                    Box box = Instantiate(boxPrefab, position, rotation, transform).GetComponent<Box>();
+                    box.SetColor(levelColorData[Random.Range(0, levelColorData.Length)].color);
+                    boxList.Add(box);
                 }
             }
 
-            if (!boxPlaced)
+            if (reduceRowsPerLayer)
             {
-                Debug.LogWarning("No space available for the box.");
-                Destroy(box);
+                currentRows = Mathf.Max(1, currentRows - rowReductionAmount);
+            }
+
+            if (reduceColumnsPerLayer)
+            {
+                currentColumns = Mathf.Max(1, currentColumns - columnReductionAmount);
             }
         }
 
-        cansGridManager.GenerateCans(boxesInstantiated);
+        levelManager.cansGridManager.GenerateCans(boxList);
     }
 
     public void ClearGrid()
     {
-        foreach (var box in boxesInstantiated)
+        foreach (var box in boxList)
         {
-            Destroy(box);
+            if (box != null)
+                Destroy(box.gameObject);
         }
 
-        boxesInstantiated.Clear();
+        boxList.Clear();
     }
 
     private void OnDrawGizmos()
     {
-        if (rows == 0 || cols == 0 || layers == 0 || spacing == 0) return;
+        if (boxPrefab == null || !boxPrefab.TryGetComponent(out BoxCollider boxCollider)) return;
 
-        Gizmos.color = gridColor;
+        Vector3 gizmoBoxSize = boxCollider.size;
+        Gizmos.color = Color.yellow;
 
-        Vector3 gridSize = GetComponent<MeshRenderer>().bounds.size;
+        int currentRows = rows;
+        int currentColumns = columns;
 
-        gridSize.x -= 2 * padding;
-        gridSize.z -= 2 * padding;
+        float gridWidth = currentColumns * gizmoBoxSize.x + (currentColumns - 1) * spacingOffset.x;
+        float gridDepth = currentRows * gizmoBoxSize.z + (currentRows - 1) * spacingOffset.z;
+
+        Vector3 startPosition = new Vector3(
+            -gridWidth / 2f + gizmoBoxSize.x / 2f,
+            gizmoBoxSize.y / 2f,
+            -gridDepth / 2f + gizmoBoxSize.z / 2f
+        ) + gridOffset;
 
         for (int layer = 0; layer < layers; layer++)
         {
-            int currentRows = rows - (reduceRows ? layer : 0);
-            int currentCols = cols - (reduceCols ? layer : 0);
-
-            float cellWidth = (gridSize.x - (currentCols - 1) * spacing) / currentCols;
-            float cellHeight = (gridSize.z - (currentRows - 1) * spacing) / currentRows;
-
-            Vector3 gridStartingPos = transform.position - gridSize / 2
-                                      + new Vector3(padding, 0, padding)
-                                      + new Vector3(0, layer * layerHeight, 0);
-
             for (int row = 0; row < currentRows; row++)
             {
-                for (int col = 0; col < currentCols; col++)
+                for (int column = 0; column < currentColumns; column++)
                 {
-                    float x = gridStartingPos.x + (col * (cellWidth + spacing)) + (cellWidth / 2);
-                    float z = gridStartingPos.z + (row * (cellHeight + spacing)) + (cellHeight / 2);
-                    float y = gridStartingPos.y;
+                    Vector3 position = new Vector3(
+                        startPosition.x + column * (gizmoBoxSize.x + spacingOffset.x),
+                        startPosition.y + layer * (gizmoBoxSize.y + spacingOffset.y),
+                        startPosition.z + row * (gizmoBoxSize.z + spacingOffset.z)
+                    );
 
-                    Vector3 position = new Vector3(x, y, z);
-                    Gizmos.DrawSphere(position, 0.5f);
-
-                    Gizmos.DrawWireCube(position, new Vector3(cellWidth, 0.1f, cellHeight));
+                    Gizmos.DrawWireCube(position, gizmoBoxSize);
                 }
             }
+
+            if (reduceRowsPerLayer)
+            {
+                currentRows = Mathf.Max(1, currentRows - rowReductionAmount);
+            }
+
+            if (reduceColumnsPerLayer)
+            {
+                currentColumns = Mathf.Max(1, currentColumns - columnReductionAmount);
+            }
+
+            gridWidth = currentColumns * gizmoBoxSize.x + (currentColumns - 1) * spacingOffset.x;
+            gridDepth = currentRows * gizmoBoxSize.z + (currentRows - 1) * spacingOffset.z;
+
+            startPosition = new Vector3(
+                -gridWidth / 2f + gizmoBoxSize.x / 2f,
+                gizmoBoxSize.y / 2f,
+                -gridDepth / 2f + gizmoBoxSize.z / 2f
+            ) + gridOffset;
         }
     }
 }

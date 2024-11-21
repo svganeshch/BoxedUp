@@ -42,27 +42,14 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        GenerateCurrentLevelData();
+        SetCurrentLevelData();
     }
 
-    void GenerateCurrentLevelData()
+    void SetCurrentLevelData()
     {
         LevelData levelData = levelsData[currentLevel];
-        ColorData[] levelColorData = levelData.boxColors;
 
-        GameObject[] levelBoxPrefabs = levelData.boxPrefabs;
-        int levelGridSize = levelData.rows * levelData.cols * levelData.gridLayers;
-
-        List<GameObject> levelBoxes = new List<GameObject>();
-        
-        for (int i = 0; i < levelGridSize; i++)
-        {
-            GameObject box = levelBoxPrefabs[Random.Range(0, levelBoxPrefabs.Length)];
-
-            levelBoxes.Add(box);
-        }
-
-        boxGridManager.GenerateGrid(levelData, levelBoxes, levelColorData);
+        boxGridManager.GenerateBoxGrid(levelData);
     }
 
     public void NextLevel()
@@ -72,10 +59,8 @@ public class LevelManager : MonoBehaviour
         Level += 1;
 
         //ClearLevel
-        boxGridManager.ClearGrid();
-        cansGridManager.ClearCans();
         
-        GenerateCurrentLevelData();
+        SetCurrentLevelData();
 
         packageController.RestartCoroutine();
 
