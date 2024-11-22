@@ -3,17 +3,23 @@ using UnityEngine;
 
 public class Box : MonoBehaviour, IPackageItem
 {
-    [SerializeField] private int size;
-
-    public BoxSlotsManager slotsManager;
     public Material[] targetMaterials;
-    public MeshRenderer[] meshRenderers;
-    public List<Material> boxMaterials = new List<Material>();
+    public BoxSlotsManager slotsManager;
+    [SerializeField] private int size;
+    [SerializeField] private float rayDistance = 5f;
+    [SerializeField] private float blockColorPercentage = 0.5f;
+    [SerializeField] private bool isBoxBlocked = false;
+
+    private BoxCollider boxCollider;
+    private MeshRenderer[] meshRenderers;
+    private List<Material> boxMaterials = new List<Material>();
 
     private Color color;
+    private Color blockedColor;
 
     private void Awake()
     {
+        boxCollider = GetComponent<BoxCollider>();
         slotsManager = GetComponentInChildren<BoxSlotsManager>();
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
 
@@ -27,14 +33,84 @@ public class Box : MonoBehaviour, IPackageItem
         }
     }
 
-    public void SetColor(Color color)
+    private void FixedUpdate()
+    {
+        BoxBlockCheck();
+    }
+
+    public bool PlaceBox()
+    {
+        if (!isBoxBlocked)
+        {
+            LevelManager.Instance.slotsPlatformManager.SetSlot(gameObject);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void BoxBlockCheck()
+    {
+        Vector3 center = boxCollider.center;
+        Vector3 size = boxCollider.size;
+
+        Transform transform = boxCollider.transform;
+
+        Vector3[] localTopCorners = new Vector3[4];
+        localTopCorners[0] = center + new Vector3(-size.x, size.y, -size.z) * 0.45f; // Top-Left-Back
+        localTopCorners[1] = center + new Vector3(size.x, size.y, -size.z) * 0.45f;  // Top-Right-Back
+        localTopCorners[2] = center + new Vector3(-size.x, size.y, size.z) * 0.45f;  // Top-Left-Front
+        localTopCorners[3] = center + new Vector3(size.x, size.y, size.z) * 0.45f;   // Top-Right-Front
+
+        bool isCurrentlyBlocked = false;
+
+        foreach (Vector3 localCorner in localTopCorners)
+        {
+            Vector3 worldCorner = transform.TransformPoint(localCorner);
+            Ray ray = new Ray(worldCorner, Vector3.up);
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            {
+                isCurrentlyBlocked = true;
+                Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.red);
+                break;
+            }
+
+            Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.green);
+        }
+
+        if (isBoxBlocked != isCurrentlyBlocked)
+        {
+            isBoxBlocked = isCurrentlyBlocked;
+            ApplyColor(isBoxBlocked ? blockedColor : color);
+        }
+    }
+
+    public void SetColor(Color newColor)
+    {
+        color = newColor;
+
+        ApplyColor(newColor);
+        InitialiseBlockedColor();
+    }
+
+    private void ApplyColor(Color newColor)
     {
         foreach (var material in boxMaterials)
         {
-            material.color = color;
+            material.color = newColor;
         }
+    }
 
-        this.color = color;
+    public void InitialiseBlockedColor()
+    {
+        blockColorPercentage = Mathf.Clamp01(blockColorPercentage);
+
+        blockedColor = new Color(
+            color.r * (1 - blockColorPercentage),
+            color.g * (1 - blockColorPercentage),
+            color.b * (1 - blockColorPercentage),
+            color.a
+        );
     }
 
     public Color GetColor()

@@ -1789,13 +1789,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1531bc33be6d34696aa84d2d822e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 4
-  slotsManager: {fileID: 0}
   targetMaterials:
   - {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
   - {fileID: 2100000, guid: 40e1367aa1cd5054b83a0d06b5de2a52, type: 2}
-  meshRenderers: []
-  boxMaterials: []
+  slotsManager: {fileID: 0}
+  size: 4
+  rayDistance: 5
+  blockColorThreshold: 5
+  isBoxBlocked: 0
 --- !u!65 &8696956300190183666
 BoxCollider:
   m_ObjectHideFlags: 0

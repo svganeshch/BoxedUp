@@ -47,13 +47,17 @@ public class InputTouchController : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                Debug.Log("hit : " + hit.collider.gameObject.name);
+                //Debug.Log("hit : " + hit.collider.gameObject.name);
 
                 if (hit.collider.gameObject.TryGetComponent<Box>(out Box box))
                 {
-                    Debug.Log("obatined box : " + box);
+                    //Debug.Log("obatined box : " + box);
 
-                    LevelManager.Instance.slotsPlatformManager.SetSlot(box.gameObject);
+                    //LevelManager.Instance.slotsPlatformManager.SetSlot(box.gameObject);
+                    if (!box.PlaceBox())
+                    {
+                        Debug.Log("Box cannot be moved!!");
+                    }
                 }
             }
         }
