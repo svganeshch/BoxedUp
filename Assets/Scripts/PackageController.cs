@@ -18,11 +18,10 @@ public class PackageController : MonoBehaviour
 
     private IEnumerator CheckBoxes(SlotsPlatformManager slotsPlatformManager)
     {
-        List<Can> cansList = levelManager.cansGridManager.cans;
-
         while (true)
         {
             List<KeyValue> slots = slotsPlatformManager.slots;
+            List<Can> cansList = levelManager.cansGridManager.cans;
 
             foreach (var slot in slots)
             {

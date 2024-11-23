@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,9 +34,9 @@ public class Box : MonoBehaviour, IPackageItem
         }
     }
 
-    private void FixedUpdate()
+    private void Start()
     {
-        BoxBlockCheck();
+        StartCoroutine(BoxBlockCheck());
     }
 
     public bool PlaceBox()
@@ -49,39 +50,44 @@ public class Box : MonoBehaviour, IPackageItem
         return false;
     }
 
-    private void BoxBlockCheck()
+    private IEnumerator BoxBlockCheck()
     {
-        Vector3 center = boxCollider.center;
-        Vector3 size = boxCollider.size;
-
-        Transform transform = boxCollider.transform;
-
-        Vector3[] localTopCorners = new Vector3[4];
-        localTopCorners[0] = center + new Vector3(-size.x, size.y, -size.z) * 0.45f; // Top-Left-Back
-        localTopCorners[1] = center + new Vector3(size.x, size.y, -size.z) * 0.45f;  // Top-Right-Back
-        localTopCorners[2] = center + new Vector3(-size.x, size.y, size.z) * 0.45f;  // Top-Left-Front
-        localTopCorners[3] = center + new Vector3(size.x, size.y, size.z) * 0.45f;   // Top-Right-Front
-
-        bool isCurrentlyBlocked = false;
-
-        foreach (Vector3 localCorner in localTopCorners)
+        while (true)
         {
-            Vector3 worldCorner = transform.TransformPoint(localCorner);
-            Ray ray = new Ray(worldCorner, Vector3.up);
-            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            Vector3 center = boxCollider.center;
+            Vector3 size = boxCollider.size;
+
+            Transform transform = boxCollider.transform;
+
+            Vector3[] localTopCorners = new Vector3[4];
+            localTopCorners[0] = center + new Vector3(-size.x, size.y, -size.z) * 0.45f; // Top-Left-Back
+            localTopCorners[1] = center + new Vector3(size.x, size.y, -size.z) * 0.45f;  // Top-Right-Back
+            localTopCorners[2] = center + new Vector3(-size.x, size.y, size.z) * 0.45f;  // Top-Left-Front
+            localTopCorners[3] = center + new Vector3(size.x, size.y, size.z) * 0.45f;   // Top-Right-Front
+
+            bool isCurrentlyBlocked = false;
+
+            foreach (Vector3 localCorner in localTopCorners)
             {
-                isCurrentlyBlocked = true;
-                Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.red);
-                break;
+                Vector3 worldCorner = transform.TransformPoint(localCorner);
+                Ray ray = new Ray(worldCorner, Vector3.up);
+                if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+                {
+                    isCurrentlyBlocked = true;
+                    Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.red);
+                    break;
+                }
+
+                Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.green);
             }
 
-            Debug.DrawRay(worldCorner, Vector3.up * rayDistance, Color.green);
-        }
+            if (isBoxBlocked != isCurrentlyBlocked)
+            {
+                isBoxBlocked = isCurrentlyBlocked;
+                ApplyColor(isBoxBlocked ? blockedColor : color);
+            }
 
-        if (isBoxBlocked != isCurrentlyBlocked)
-        {
-            isBoxBlocked = isCurrentlyBlocked;
-            ApplyColor(isBoxBlocked ? blockedColor : color);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 
