@@ -53,7 +53,8 @@ public class InputTouchController : MonoBehaviour
                 {
                     //Debug.Log("obatined box : " + box);
 
-                    //LevelManager.Instance.slotsPlatformManager.SetSlot(box.gameObject);
+                    if (box.isSloted) return;
+
                     if (!box.PlaceBox())
                     {
                         Debug.Log("Box cannot be moved!!");

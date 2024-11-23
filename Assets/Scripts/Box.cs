@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Box : MonoBehaviour, IPackageItem
 {
+    public bool isSloted = false;
     public Material[] targetMaterials;
     public BoxSlotsManager slotsManager;
     [SerializeField] private int size;
@@ -18,6 +19,8 @@ public class Box : MonoBehaviour, IPackageItem
 
     private Color color;
     private Color blockedColor;
+
+    private Coroutine boxBlockCheckCoroutine;
 
     private void Awake()
     {
@@ -37,7 +40,7 @@ public class Box : MonoBehaviour, IPackageItem
 
     private void Start()
     {
-        StartCoroutine(BoxBlockCheck());
+        boxBlockCheckCoroutine = StartCoroutine(BoxBlockCheck());
     }
 
     public bool PlaceBox()
@@ -45,6 +48,9 @@ public class Box : MonoBehaviour, IPackageItem
         if (!isBoxBlocked)
         {
             LevelManager.Instance.slotsPlatformManager.SetSlot(gameObject);
+            isSloted = true;
+            StopCoroutine(boxBlockCheckCoroutine);
+
             return true;
         }
 
