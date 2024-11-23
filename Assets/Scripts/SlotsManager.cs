@@ -21,10 +21,17 @@ public class SlotsManager : MonoBehaviour
             if (slot.Obj != null) continue;
 
             slot.Obj = obj;
-            //obj.transform.position = slot.Slot.transform.position;
+            Vector3 ObjOriginalScale = obj.transform.lossyScale;
+
             obj.transform.SetParent(slot.Slot.transform);
             obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
+            Vector3 parentScale = slot.Slot.transform.lossyScale;
+            obj.transform.localScale = new Vector3(
+                ObjOriginalScale.x / parentScale.x,
+                ObjOriginalScale.y / parentScale.y,
+                ObjOriginalScale.z / parentScale.z
+            );
             break;
         }
     }
