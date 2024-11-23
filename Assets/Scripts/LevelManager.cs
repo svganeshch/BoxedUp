@@ -54,7 +54,16 @@ public class LevelManager : MonoBehaviour
 
     public void NextLevel()
     {
-        if (currentLevel == levelsData.Length - 1) return;
+        if (currentLevel >= levelsData.Length - 1)
+        {
+            boxGridManager.GenerateBoxGrid(GenerateRandomLevel());
+
+            Level += 1;
+            packageController.RestartCoroutine();
+            OnLevelChange.Invoke(Level + 1);
+
+            return;
+        }
 
         Level += 1;
 
@@ -65,5 +74,21 @@ public class LevelManager : MonoBehaviour
         packageController.RestartCoroutine();
 
         OnLevelChange.Invoke(Level + 1);
+    }
+
+    private LevelData GenerateRandomLevel()
+    {
+        LevelData randomLevel = (LevelData) ScriptableObject.CreateInstance("LevelData");
+
+        randomLevel.rows = Random.Range(2, 5);
+        randomLevel.cols = Random.Range(2, 5);
+        randomLevel.gridLayers = Random.Range(2, 4);
+        randomLevel.gridRowsReduced = Random.value < 0.5f;
+        randomLevel.gridColumnsReduced = Random.value < 0.5f;
+
+        randomLevel.boxPrefabs = levelsData[levelsData.Length - 1].boxPrefabs;
+        randomLevel.boxColors = levelsData[levelsData.Length - 1].boxColors;
+
+        return randomLevel;
     }
 }
