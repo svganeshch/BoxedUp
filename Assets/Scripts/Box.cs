@@ -8,8 +8,9 @@ public class Box : MonoBehaviour, IPackageItem
     public BoxSlotsManager slotsManager;
     [SerializeField] private int size;
     [SerializeField] private float rayDistance = 5f;
-    [SerializeField] private float blockColorPercentage = 0.5f;
     [SerializeField] private bool isBoxBlocked = false;
+
+    private float blockColorPercentage = 0.35f;
 
     private BoxCollider boxCollider;
     private MeshRenderer[] meshRenderers;
@@ -59,11 +60,12 @@ public class Box : MonoBehaviour, IPackageItem
 
             Transform transform = boxCollider.transform;
 
-            Vector3[] localTopCorners = new Vector3[4];
+            Vector3[] localTopCorners = new Vector3[5];
             localTopCorners[0] = center + new Vector3(-size.x, size.y, -size.z) * 0.45f; // Top-Left-Back
             localTopCorners[1] = center + new Vector3(size.x, size.y, -size.z) * 0.45f;  // Top-Right-Back
             localTopCorners[2] = center + new Vector3(-size.x, size.y, size.z) * 0.45f;  // Top-Left-Front
             localTopCorners[3] = center + new Vector3(size.x, size.y, size.z) * 0.45f;   // Top-Right-Front
+            localTopCorners[4] = center; // Middle
 
             bool isCurrentlyBlocked = false;
 
