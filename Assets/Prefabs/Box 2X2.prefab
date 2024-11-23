@@ -1795,7 +1795,7 @@ MonoBehaviour:
   slotsManager: {fileID: 0}
   size: 4
   rayDistance: 5
-  blockColorThreshold: 5
+  blockColorPercentage: 0.5
   isBoxBlocked: 0
 --- !u!65 &8696956300190183666
 BoxCollider:

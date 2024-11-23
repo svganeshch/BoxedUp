@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6224552665811436523
+--- !u!114 &-5938376264440233862
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,14 +20,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SkyboxGradMat
-  m_Shader: {fileID: -6465566751694194690, guid: 5de31dbfe6a9bd544952e91c4d197524,
+  m_Name: GradientFloor
+  m_Shader: {fileID: -6465566751694194690, guid: e218e22e65ae86f44945f93ec3a2b903,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -52,11 +52,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _GradientPower: 0.15
+    - _GradientMid: 0.55
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _BottomColor: {r: 0, g: 0.42057514, b: 0.63522005, a: 0}
-    - _TopColor: {r: 0.51257855, g: 0.8730976, b: 1, a: 0}
+    - _BottomColor: {r: 0, g: 0.14482404, b: 0.3018868, a: 0}
+    - _MiddleColor: {r: 0.3571852, g: 0.449325, b: 0.5283019, a: 0}
+    - _TopColor: {r: 0, g: 0.14509805, b: 0.3019608, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
