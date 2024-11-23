@@ -936,7 +936,7 @@ MonoBehaviour:
   reduceColumnsPerLayer: 0
   rowReductionAmount: 1
   columnReductionAmount: 1
-  rotationProbability: 0
+  rotationProbability: 0.1
 --- !u!4 &708256942
 Transform:
   m_ObjectHideFlags: 0
@@ -2697,7 +2697,7 @@ PrefabInstance:
     - target: {fileID: 625522567979814866, guid: d54c9d2ec2fa3cf469c6fb212c54c701,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 625522567979814866, guid: d54c9d2ec2fa3cf469c6fb212c54c701,
         type: 3}
@@ -2707,7 +2707,7 @@ PrefabInstance:
     - target: {fileID: 625522567979814866, guid: d54c9d2ec2fa3cf469c6fb212c54c701,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 625522567979814866, guid: d54c9d2ec2fa3cf469c6fb212c54c701,
         type: 3}
@@ -2770,17 +2770,17 @@ PrefabInstance:
     - target: {fileID: 4417068706898197687, guid: 42bde5f544ff51d4fb442ce47112ef95,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.42
+      value: -4.16
       objectReference: {fileID: 0}
     - target: {fileID: 4417068706898197687, guid: 42bde5f544ff51d4fb442ce47112ef95,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4417068706898197687, guid: 42bde5f544ff51d4fb442ce47112ef95,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.32
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4417068706898197687, guid: 42bde5f544ff51d4fb442ce47112ef95,
         type: 3}

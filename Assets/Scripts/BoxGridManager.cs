@@ -46,16 +46,72 @@ public class BoxGridManager : MonoBehaviour
             return;
         }
 
-        float gridWidth = 0f;
-        float gridDepth = 0f;
+        Vector3 minBounds = Vector3.positiveInfinity;
+        Vector3 maxBounds = Vector3.negativeInfinity;
 
-        Vector3 startPosition = Vector3.zero;
+        int tempRows = currentRows;
+        int tempColumns = currentColumns;
 
         for (int layer = 0; layer < layers; layer++)
         {
-            for (int row = 0; row < currentRows; row++)
+            float currentZPosition = 0f;
+
+            for (int row = 0; row < tempRows; row++)
             {
-                for (int column = 0; column < currentColumns; column++)
+                float currentXPosition = 0f;
+                float maxBoxDepthInRow = 0f;
+
+                for (int column = 0; column < tempColumns; column++)
+                {
+                    GameObject boxPrefab = boxes[Random.Range(0, boxes.Length)];
+                    if (!boxPrefab.TryGetComponent(out BoxCollider boxCollider))
+                    {
+                        Debug.LogError($"Box prefab '{boxPrefab.name}' is missing a BoxCollider!");
+                        continue;
+                    }
+
+                    bool shouldRotate = Random.value < rotationProbability;
+                    Vector3 rotatedSize = shouldRotate
+                        ? new Vector3(boxCollider.size.z, boxCollider.size.y, boxCollider.size.x)
+                        : boxCollider.size;
+
+                    Vector3 boxPosition = new Vector3(
+                        currentXPosition + rotatedSize.x / 2f,
+                        layer * (rotatedSize.y + spacingOffset.y),
+                        currentZPosition + rotatedSize.z / 2f
+                    );
+
+                    minBounds = Vector3.Min(minBounds, boxPosition - rotatedSize / 2f);
+                    maxBounds = Vector3.Max(maxBounds, boxPosition + rotatedSize / 2f);
+
+                    currentXPosition += rotatedSize.x + spacingOffset.x;
+                    maxBoxDepthInRow = Mathf.Max(maxBoxDepthInRow, rotatedSize.z);
+                }
+
+                currentZPosition += maxBoxDepthInRow + spacingOffset.z;
+            }
+
+            if (reduceRowsPerLayer) tempRows = Mathf.Max(1, tempRows - rowReductionAmount);
+            if (reduceColumnsPerLayer) tempColumns = Mathf.Max(1, tempColumns - columnReductionAmount);
+        }
+
+        Vector3 gridCenterOffset = (minBounds + maxBounds) / 2f;
+        gridCenterOffset.y = minBounds.y;
+        gridCenterOffset -= gridOffset;
+
+        tempRows = currentRows;
+        tempColumns = currentColumns;
+
+        for (int layer = 0; layer < layers; layer++)
+        {
+            float currentZPosition = 0f;
+
+            for (int row = 0; row < tempRows; row++)
+            {
+                float currentXPosition = 0f;
+                float maxBoxDepthInRow = 0f;
+
+                for (int column = 0; column < tempColumns; column++)
                 {
                     GameObject boxPrefab = boxes[Random.Range(0, boxes.Length)];
                     if (!boxPrefab.TryGetComponent(out BoxCollider boxCollider))
@@ -71,36 +127,25 @@ public class BoxGridManager : MonoBehaviour
                         ? new Vector3(boxCollider.size.z, boxCollider.size.y, boxCollider.size.x)
                         : boxCollider.size;
 
-                    gridWidth = currentColumns * rotatedSize.x + (currentColumns - 1) * spacingOffset.x;
-                    gridDepth = currentRows * rotatedSize.z + (currentRows - 1) * spacingOffset.z;
-
-                    startPosition = new Vector3(
-                        -gridWidth / 2f + rotatedSize.x / 2f,
-                        rotatedSize.y / 2f + layer * (rotatedSize.y + spacingOffset.y),
-                        -gridDepth / 2f + rotatedSize.z / 2f
-                    ) + gridOffset;
-
                     Vector3 position = new Vector3(
-                        startPosition.x + column * (rotatedSize.x + spacingOffset.x),
-                        startPosition.y,
-                        startPosition.z + row * (rotatedSize.z + spacingOffset.z)
+                        currentXPosition + rotatedSize.x / 2f - gridCenterOffset.x,
+                        layer * (rotatedSize.y + spacingOffset.y) - gridCenterOffset.y,
+                        currentZPosition + rotatedSize.z / 2f - gridCenterOffset.z
                     );
 
                     Box box = Instantiate(boxPrefab, position, rotation, transform).GetComponent<Box>();
                     box.SetColor(levelColorData[Random.Range(0, levelColorData.Length)].color);
                     boxList.Add(box);
+
+                    currentXPosition += rotatedSize.x + spacingOffset.x;
+                    maxBoxDepthInRow = Mathf.Max(maxBoxDepthInRow, rotatedSize.z);
                 }
+
+                currentZPosition += maxBoxDepthInRow + spacingOffset.z;
             }
 
-            if (reduceRowsPerLayer)
-            {
-                currentRows = Mathf.Max(1, currentRows - rowReductionAmount);
-            }
-
-            if (reduceColumnsPerLayer)
-            {
-                currentColumns = Mathf.Max(1, currentColumns - columnReductionAmount);
-            }
+            if (reduceRowsPerLayer) tempRows = Mathf.Max(1, tempRows - rowReductionAmount);
+            if (reduceColumnsPerLayer) tempColumns = Mathf.Max(1, tempColumns - columnReductionAmount);
         }
 
         levelManager.cansGridManager.GenerateCans(boxList);
