@@ -747,6 +747,7 @@ MonoBehaviour:
   canPrefab: {fileID: 6349223536768628169, guid: b45bb1653a0a9144981b153b20bd7205,
     type: 3}
   spacing: 1.25
+  moveDuration: 0.15
   cans: []
 --- !u!114 &483504978
 MonoBehaviour:
@@ -760,6 +761,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5cd404ae6dcdb4c8491065b4461ee8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnSlotFilled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &506875285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,6 +1007,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7cc190cd3d9a5488613761cba4ccdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveDuration: 0.25
+  isSlotted: 0
   slots:
   - Slot: {fileID: 841508550}
     Obj: {fileID: 0}

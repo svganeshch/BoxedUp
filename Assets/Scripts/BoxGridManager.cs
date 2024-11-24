@@ -20,7 +20,7 @@ public class BoxGridManager : MonoBehaviour
     private Vector3 boxSize;
 
     private LevelManager levelManager;
-    private List<Box> boxList = new List<Box>();
+    public List<Box> boxList = new List<Box>();
 
     private void Start()
     {
