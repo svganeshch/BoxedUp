@@ -12,6 +12,8 @@ public class KeyValue
 
 public class SlotsManager : MonoBehaviour
 {
+    public float moveDuration = 0.5f;
+    public bool isSlotted = false;
     public List<KeyValue> slots;
 
     public virtual void SetSlot(GameObject obj)
@@ -24,7 +26,7 @@ public class SlotsManager : MonoBehaviour
             Vector3 ObjOriginalScale = obj.transform.lossyScale;
 
             obj.transform.SetParent(slot.Slot.transform);
-            obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            //obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             Vector3 parentScale = slot.Slot.transform.lossyScale;
             obj.transform.localScale = new Vector3(
@@ -32,8 +34,22 @@ public class SlotsManager : MonoBehaviour
                 ObjOriginalScale.y / parentScale.y,
                 ObjOriginalScale.z / parentScale.z
             );
+
+            SetSlotAnimation(obj, slot.Slot.transform);
+
             break;
         }
+    }
+
+    public virtual void SetSlotAnimation(GameObject obj, Transform targetPosition)
+    {
+        LeanTween.move(obj, targetPosition.position, moveDuration)
+            .setEaseOutQuad()
+            .setOnComplete(() =>
+            {
+                obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                LevelManager.Instance.packageController.OnSlotFilled.Invoke();
+            });
     }
 
     public bool AreSlotsFull()

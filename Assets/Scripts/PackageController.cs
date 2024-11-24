@@ -2,62 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PackageController : MonoBehaviour
 {
-    LevelManager levelManager;
+    public UnityEvent OnSlotFilled;
 
-    private Coroutine packageControllerCoroutine;
+    LevelManager levelManager;
+    private List<Can> cansList;
+    private SlotsPlatformManager slotsPlatformManager;
 
     private void Start()
     {
         levelManager = LevelManager.Instance;
+        slotsPlatformManager = levelManager.slotsPlatformManager;
 
-        packageControllerCoroutine = StartCoroutine(CheckBoxes(levelManager.slotsPlatformManager));
+        OnSlotFilled = new UnityEvent();
+        OnSlotFilled.AddListener(CheckBoxes);
     }
 
-    private IEnumerator CheckBoxes(SlotsPlatformManager slotsPlatformManager)
+    private void CheckBoxes()
     {
-        while (true)
+        List<KeyValue> slots = slotsPlatformManager.slots;
+        cansList = levelManager.cansGridManager.cans;
+
+        foreach (var slot in slots)
         {
-            List<KeyValue> slots = slotsPlatformManager.slots;
-            List<Can> cansList = levelManager.cansGridManager.cans;
+            if (slot.Obj == null) continue;
 
-            foreach (var slot in slots)
+            if (slot.Obj.TryGetComponent<Box>(out var currentBox))
             {
-                if (slot.Obj == null) continue;
+                BoxSlotsManager boxSlotsManager = currentBox.slotsManager;
 
-                if (slot.Obj.TryGetComponent<Box>(out var currentBox))
+                if (currentBox.GetColor() == cansList[0].GetColor())
                 {
-                    if (currentBox == null) continue;
+                    currentBox.slotsManager.SetSlot(cansList[0].gameObject);
 
-                    if (currentBox.slotsManager.AreSlotsFull())
-                    {
-                        currentBox.slotsManager.OnSlotsFull(currentBox);
-                        Debug.Log("box is full");
-                        continue;
-                    }
+                    cansList.RemoveAt(0);
+                    levelManager.cansGridManager.ArrangeCans(true);
 
-                    if (currentBox.GetColor() == cansList[0].GetColor())
-                    {
-                        currentBox.slotsManager.SetSlot(cansList[0].gameObject);
-                        cansList.RemoveAt(0);
-                        levelManager.cansGridManager.ArrangeCans();
+                    Debug.Log("Found same color box, placing can!");
+                }
 
-                        Debug.Log("Found same color box, placing can!");
-                    }
+                if (boxSlotsManager.AreSlotsFull())
+                {
+                    currentBox.slotsManager.OnSlotsFull(currentBox);
+                    Debug.Log("Box is full!");
                 }
             }
-
-            //Debug.Log("looping......!");
-
-            yield return new WaitForSeconds(0.3f);
         }
-    }
-
-    public void RestartCoroutine()
-    {
-        StopCoroutine(packageControllerCoroutine);
-        StartCoroutine(CheckBoxes(levelManager.slotsPlatformManager));
     }
 }
