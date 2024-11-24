@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class CansGridManager : MonoBehaviour
 
     public GameObject canPrefab;
     public float spacing = 0.5f;
+    public float moveDuration = 0.15f;
 
     public List<Can> cans = new List<Can>();
 
@@ -35,11 +37,11 @@ public class CansGridManager : MonoBehaviour
         ArrangeCans();
     }
 
-    public void ArrangeCans()
+    public void ArrangeCans(bool animate = false)
     {
         if (cans.Count <= 0)
         {
-            Debug.LogWarning("No cans to place!!");
+            Debug.LogWarning("No cans to arrange!");
             return;
         }
 
@@ -47,12 +49,48 @@ public class CansGridManager : MonoBehaviour
         float totalLength = CalculateLineLength(out segmentLengths);
         float currentDistance = 0f;
 
-        foreach (var can in cans)
+        for (int i = 0; i < cans.Count; i++)
         {
-            Vector3 position = GetPositionOnLine(segmentLengths, currentDistance);
-            can.transform.position = position;
+            if (cans[i] == null)
+            {
+                cans.RemoveAt(i);
+                i--;
+                continue;
+            }
+
+            Vector3 targetPosition = GetPositionOnLine(segmentLengths, currentDistance);
+            if (animate)
+            {
+                StartCoroutine(MoveCanToPosition(cans[i], targetPosition));
+            }
+            else
+            {
+                cans[i].transform.position = targetPosition;
+            }
 
             currentDistance += spacing;
+        }
+    }
+
+    private IEnumerator MoveCanToPosition(Can can, Vector3 targetPosition)
+    {
+        if (can == null) yield break;
+
+        Vector3 startPosition = can.transform.position;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < moveDuration)
+        {
+            if (can == null) yield break;
+
+            can.transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / moveDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        if (can != null)
+        {
+            can.transform.position = targetPosition;
         }
     }
 
