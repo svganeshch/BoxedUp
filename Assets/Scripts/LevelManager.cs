@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
+    public Transform boxOutLocation;
 
     [SerializeField] private int currentLevel = 0;
 
