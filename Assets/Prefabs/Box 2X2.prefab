@@ -1752,6 +1752,7 @@ GameObject:
   - component: {fileID: 4417068706898197687}
   - component: {fileID: 844740971959960084}
   - component: {fileID: 8696956300190183666}
+  - component: {fileID: 7836833569769415153}
   m_Layer: 0
   m_Name: Box 2X2
   m_TagString: Untagged
@@ -1789,13 +1790,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1531bc33be6d34696aa84d2d822e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSloted: 0
   targetMaterials:
   - {fileID: 2100000, guid: 5e87bfcf31114124480f8bf896423365, type: 2}
   - {fileID: 2100000, guid: 40e1367aa1cd5054b83a0d06b5de2a52, type: 2}
   slotsManager: {fileID: 0}
   size: 4
   rayDistance: 5
-  blockColorPercentage: 0.5
   isBoxBlocked: 0
 --- !u!65 &8696956300190183666
 BoxCollider:
@@ -1818,6 +1819,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.1598158, y: 1.580287, z: 3.9565568}
   m_Center: {x: 0.11616802, y: 1.0479809, z: -0.12427807}
+--- !u!95 &7836833569769415153
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7974066797810726363}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2054a4722b29f96448d2aba461780c45, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8529953022181019257
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,8 +48,13 @@ public class SlotsManager : MonoBehaviour
             .setOnComplete(() =>
             {
                 obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                LevelManager.Instance.packageController.OnSlotFilled.Invoke();
+                OnAnimationComplete(obj);
             });
+    }
+
+    public virtual void OnAnimationComplete(GameObject obj)
+    {
+        LevelManager.Instance.packageController.OnSlotFilled.Invoke();
     }
 
     public bool AreSlotsFull()

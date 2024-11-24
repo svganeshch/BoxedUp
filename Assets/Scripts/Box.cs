@@ -13,6 +13,7 @@ public class Box : MonoBehaviour, IPackageItem
 
     private float blockColorPercentage = 0.35f;
 
+    public Animator animator;
     private BoxCollider boxCollider;
     private MeshRenderer[] meshRenderers;
     private List<Material> boxMaterials = new List<Material>();
@@ -24,6 +25,7 @@ public class Box : MonoBehaviour, IPackageItem
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider>();
         slotsManager = GetComponentInChildren<BoxSlotsManager>();
         meshRenderers = GetComponentsInChildren<MeshRenderer>();

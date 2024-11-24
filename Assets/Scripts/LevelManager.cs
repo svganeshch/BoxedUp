@@ -59,7 +59,6 @@ public class LevelManager : MonoBehaviour
             boxGridManager.GenerateBoxGrid(GenerateRandomLevel());
 
             Level += 1;
-            packageController.RestartCoroutine();
             OnLevelChange.Invoke(Level + 1);
 
             return;
@@ -70,8 +69,6 @@ public class LevelManager : MonoBehaviour
         //ClearLevel
         
         SetCurrentLevelData();
-
-        packageController.RestartCoroutine();
 
         OnLevelChange.Invoke(Level + 1);
     }
