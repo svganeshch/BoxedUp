@@ -32,4 +32,9 @@ public class UIManager : MonoBehaviour
     {
         levelManager.NextLevel();
     }
+
+    public void OnLevelRefresh()
+    {
+        levelManager.RefreshLevel();
+    }
 }

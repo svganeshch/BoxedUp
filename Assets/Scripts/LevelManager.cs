@@ -74,6 +74,11 @@ public class LevelManager : MonoBehaviour
         OnLevelChange.Invoke(Level + 1);
     }
 
+    public void RefreshLevel()
+    {
+        SetCurrentLevelData();
+    }
+
     private LevelData GenerateRandomLevel()
     {
         LevelData randomLevel = (LevelData) ScriptableObject.CreateInstance("LevelData");
